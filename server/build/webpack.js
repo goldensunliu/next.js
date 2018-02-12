@@ -71,7 +71,15 @@ function externalsConfig (dir, isServer) {
       }
 
       // Webpack itself has to be compiled because it doesn't always use module relative paths
-      if (res.match(/node_modules[/\\].*\.js/) && !res.match(/node_modules[/\\]webpack/)) {
+      if (res.match(/node_modules[/\\]next[/\\]dist[/\\]pages/)) {
+        return callback()
+      }
+
+      if (res.match(/node_modules[/\\]webpack/)) {
+        return callback()
+      }
+
+      if (res.match(/node_modules[/\\].*\.js/)) {
         return callback(null, `commonjs ${request}`)
       }
 
@@ -250,11 +258,11 @@ export default async function getBaseWebpackConfig (dir, {dev = false, isServer 
           // We need to move react-dom explicitly into common chunks.
           // Otherwise, if some other page or module uses it, it might
           // included in that bundle too.
-          if (dev && module.context && module.context.indexOf(`${sep}react${sep}`) >= 0) {
+          if (module.context && module.context.indexOf(`${sep}react${sep}`) >= 0) {
             return true
           }
 
-          if (dev && module.context && module.context.indexOf(`${sep}react-dom${sep}`) >= 0) {
+          if (module.context && module.context.indexOf(`${sep}react-dom${sep}`) >= 0) {
             return true
           }
 
